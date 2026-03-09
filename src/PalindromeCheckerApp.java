@@ -1,99 +1,71 @@
-import java.util.*;
-
-// Step 1: Strategy Interface
-interface PalindromeStrategy {
-    boolean isPalindrome(String str);
-}
-
-// Step 2: Stack Strategy Implementation
-class StackStrategy implements PalindromeStrategy {
-
-    public boolean isPalindrome(String str) {
-        Stack<Character> stack = new Stack<>();
-
-        for(char c : str.toCharArray()) {
-            stack.push(c);
-        }
-
-        for(char c : str.toCharArray()) {
-            if(c != stack.pop()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-}
-
-// Step 3: Deque Strategy Implementation
-class DequeStrategy implements PalindromeStrategy {
-
-    public boolean isPalindrome(String str) {
-        Deque<Character> deque = new ArrayDeque<>();
-
-        for(char c : str.toCharArray()) {
-            deque.addLast(c);
-        }
-
-        while(deque.size() > 1) {
-            if(deque.removeFirst() != deque.removeLast()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-}
-
-// Step 4: Context Class
-class PalindromeChecker {
-
-    private PalindromeStrategy strategy;
-
-    public void setStrategy(PalindromeStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public boolean checkPalindrome(String str) {
-        return strategy.isPalindrome(str);
-    }
-}
+import java.util.Scanner;
 
 
 public class PalindromeCheckerApp {
 
+    // Method 1: Using StringBuilder reverse
+    public static boolean checkUsingReverse(String str) {
+        String reversed = new StringBuilder(str).reverse().toString();
+        return str.equals(reversed);
+    }
+
+    // Method 2: Using two-pointer technique
+    public static boolean checkUsingTwoPointer(String str) {
+        int left = 0;
+        int right = str.length() - 1;
+
+        while (left < right) {
+            if (str.charAt(left) != str.charAt(right))
+                return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    // Method 3: Using recursion
+    public static boolean checkUsingRecursion(String str, int left, int right) {
+        if (left >= right)
+            return true;
+
+        if (str.charAt(left) != str.charAt(right))
+            return false;
+
+        return checkUsingRecursion(str, left + 1, right - 1);
+    }
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        PalindromeChecker checker = new PalindromeChecker();
-
-        System.out.println("Enter a string:");
+        System.out.print("Enter a string: ");
         String input = sc.nextLine();
 
-        System.out.println("Choose Strategy:");
-        System.out.println("1. Stack Strategy");
-        System.out.println("2. Deque Strategy");
+        // Reverse method timing
+        long start1 = System.nanoTime();
+        boolean result1 = checkUsingReverse(input);
+        long end1 = System.nanoTime();
 
-        int choice = sc.nextInt();
+        // Two pointer timing
+        long start2 = System.nanoTime();
+        boolean result2 = checkUsingTwoPointer(input);
+        long end2 = System.nanoTime();
 
-        if(choice == 1) {
-            checker.setStrategy(new StackStrategy());
-        }
-        else if(choice == 2) {
-            checker.setStrategy(new DequeStrategy());
-        }
-        else {
-            System.out.println("Invalid Choice");
-            return;
-        }
+        // Recursion timing
+        long start3 = System.nanoTime();
+        boolean result3 = checkUsingRecursion(input, 0, input.length() - 1);
+        long end3 = System.nanoTime();
 
-        boolean result = checker.checkPalindrome(input);
+        // Display results
+        System.out.println("\n--- Performance Comparison ---");
 
-        if(result) {
-            System.out.println("The string is a Palindrome.");
-        } else {
-            System.out.println("The string is NOT a Palindrome.");
-        }
+        System.out.println("Reverse Method: " + result1 +
+                " | Time: " + (end1 - start1) + " ns");
+
+        System.out.println("Two Pointer Method: " + result2 +
+                " | Time: " + (end2 - start2) + " ns");
+
+        System.out.println("Recursion Method: " + result3 +
+                " | Time: " + (end3 - start3) + " ns");
 
         sc.close();
     }

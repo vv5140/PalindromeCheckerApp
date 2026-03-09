@@ -1,33 +1,52 @@
 import java.util.Scanner;
+import java.util.Stack;
 
+// PalindromeChecker class
+class PalindromeChecker {
+
+    // Method to check palindrome
+    public boolean checkPalindrome(String input) {
+
+        Stack<Character> stack = new Stack<>();
+
+        // push characters to stack
+        for(int i = 0; i < input.length(); i++){
+            stack.push(input.charAt(i));
+        }
+
+        // reverse string using stack
+        String reversed = "";
+        while(!stack.isEmpty()){
+            reversed = reversed + stack.pop();
+        }
+
+        // compare original and reversed
+        return input.equalsIgnoreCase(reversed);
+    }
+}
 
 
 
 public class PalindromeCheckerApp {
 
-    public static boolean isPalindrome(String str) {
-        // Normalize string: remove spaces and convert to lowercase
-        String normalized = str.replaceAll("\\s+", "").toLowerCase();
-
-        // Check palindrome
-        for (int i = 0; i < normalized.length() / 2; i++) {
-            if (normalized.charAt(i) != normalized.charAt(normalized.length() - 1 - i)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static void main(String[] args) {
+
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Input: ");
-        String input = sc.nextLine();
+        System.out.println("Enter a string:");
+        String str = sc.nextLine();
 
-        boolean result = isPalindrome(input);
+        PalindromeChecker checker = new PalindromeChecker();
 
-        System.out.println("Is Palindrome? : " + result);
+        boolean result = checker.checkPalindrome(str);
+
+        if(result){
+            System.out.println("The string is a Palindrome");
+        } else {
+            System.out.println("The string is NOT a Palindrome");
+        }
 
         sc.close();
     }
 }
+
